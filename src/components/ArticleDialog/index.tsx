@@ -1,13 +1,14 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../../components/ui/dialog'
-import { Button } from '../../components/ui/button'
-import { Input } from '../../components/ui/input'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../components/ui/form'
-import { Textarea } from '../../components/ui/textarea'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
+import { Button } from '../ui/button'
+import { Input } from '../ui/input'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
+import { Textarea } from '../ui/textarea'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { ArticleProps } from '../Article'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid';
+import { ArticlesContext } from '../../Contexts/ArticlesContext'
 
 const formSchema = z.object({
   title: z.string().min(1),
@@ -15,11 +16,9 @@ const formSchema = z.object({
   // cover: z.any(),
 })
 
-interface AritcleDialogProps {
-  modifyArticles: (article: ArticleProps) => void
-}
 
-export function AritcleDialog({ modifyArticles }: AritcleDialogProps) {
+export function AritcleDialog() {
+  const articleContext = useContext(ArticlesContext);
   const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -34,8 +33,7 @@ export function AritcleDialog({ modifyArticles }: AritcleDialogProps) {
   function addArticle(article: z.infer<typeof formSchema>) {
     const { title, content } = article;
     const newContent = content.replace(/\n/gi, '  \n');
-    console.log(article);
-    modifyArticles({ title, content: newContent });
+    articleContext!.addArticle({ id: uuidv4(), title, content: newContent });
     form.setValue("title", "");
     form.setValue("content", "");
     setOpen(false);
