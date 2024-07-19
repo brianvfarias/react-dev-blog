@@ -5,7 +5,7 @@ import { Textarea } from '../ui/textarea'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { useContext } from 'react'
+import { ChangeEvent, useContext, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import { ArticlesContext } from '../../Contexts/ArticlesContext'
 
@@ -21,9 +21,27 @@ interface ArticleFormProps {
 }
 
 
+
+
 export function ArticleForm(props: ArticleFormProps) {
 
   const articleContext = useContext(ArticlesContext);
+  const [sendCover, setSendCover] = useState("");
+
+
+  function setCoverFile(e: ChangeEvent<HTMLInputElement>) {
+    if (!e.target.files) return "";
+    const imageFile = e.target.files[0];
+    // const base64Image = window.btoa(e!.target.files[0]);
+    // setSendCover(base64Image);
+    const reader = new FileReader();
+    reader.addEventListener("load", (e) => {
+      const result = e!.target?.result
+      if (typeof result == "string") setSendCover(result);
+    })
+
+    reader.readAsDataURL(imageFile);
+  }
 
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -37,11 +55,10 @@ export function ArticleForm(props: ArticleFormProps) {
 
   function handleArticleSubmit(article: z.infer<typeof formSchema>) {
     const { title, content, cover } = article;
-    console.log({ title, content, cover });
+    console.log({ title, content, cover, sendCover });
     const newContent = content.replace(/\n/gi, '  \n');
-    articleContext!.addArticle({ id: uuidv4(), title, content: newContent });
-    form.setValue("title", "");
-    form.setValue("content", "");
+    articleContext!.addArticle({ id: uuidv4(), title, content: newContent, cover: sendCover });
+    form.reset()
     if (props?.setOpen) {
       props.setOpen(false);
     }
@@ -92,8 +109,7 @@ export function ArticleForm(props: ArticleFormProps) {
           accept="img/*"
           {...form.register("cover")}
           onChange={(event) => {
-            const cover = event.target.files ? event.target.files[0] : null;
-            return cover;
+            setCoverFile(event);
           }}
         />
 

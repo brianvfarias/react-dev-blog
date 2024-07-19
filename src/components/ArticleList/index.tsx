@@ -12,7 +12,7 @@ export function ArticleList({ articles }: ArticleListProps) {
   return (
     <div>
       {articles.map(article => (
-        <Article key={article.id} id={article.id} title={article.title} content={article.content} />
+        <Article key={article.id} id={article.id} title={article.title} content={article.content} cover={article.cover} />
       ))}
     </div>
 

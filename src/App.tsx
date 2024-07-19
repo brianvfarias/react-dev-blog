@@ -34,7 +34,32 @@ function articlesReducer(state: ReducerState, action: ArticleReducerActions): Re
 }
 
 
+// # Centering divs in HTML/CSS
 
+// There are many ways of centering a div in CSS and, this is part of the reason why it can be so challenging at times.
+
+// Following there are some options available for doing it
+
+// # Margin Auto
+
+// If your issue is trying to center a div horizontally, an easy way of doing so is using the following code:
+
+// ```css
+// div {
+//    margin: 0 auto; 
+// }
+// ```
+
+// # Grid
+
+// Grid layout has also an amazing shorthand allowing any HTML developer (contains irony) to center a div:
+
+// ```css
+// div {
+//   display: grid;
+//   place-items: center;
+// }
+// ```
 function App() {
   const [state, dispatch] = useReducer(articlesReducer, { articles: [] })
   // const [articles, setArticles] = useState<ArticleProps[]>([]);
