@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import { ArticleProps } from "./components/Article"
 // import { ArticleList } from "./componets/ArticleList/ArticleList";
 import { Navbar } from "./components/Navbar"
@@ -7,7 +7,7 @@ import { ArticlesContext } from "./Contexts/ArticlesContext";
 
 interface ArticleReducerActions {
   type: string,
-  payload: ArticleProps
+  payload: ArticleProps | ArticleProps[]
 }
 
 interface ReducerState {
@@ -24,8 +24,13 @@ function articlesReducer(state: ReducerState, action: ArticleReducerActions): Re
       break;
     }
     case 'DELETE_ARTICLE': {
-      const newArticles = articles.filter(article => article.id !== action.payload.id)
+      const newArticles = articles.filter(article => article.id !== action.payload!.id)
       return { ...state, articles: newArticles }
+    }
+    case 'LOAD_ARTICLES': {
+
+      return { ...state, articles: action.payload };
+      break;
     }
     default: {
       throw Error('Unknown action: ' + action.type);
@@ -60,9 +65,20 @@ function articlesReducer(state: ReducerState, action: ArticleReducerActions): Re
 //   place-items: center;
 // }
 // ```
+
+
+
 function App() {
   const [state, dispatch] = useReducer(articlesReducer, { articles: [] })
-  // const [articles, setArticles] = useState<ArticleProps[]>([]);
+  useEffect(() => {
+    (async function fetchArticles() {
+      const response = await fetch('http://localhost:8888/articles')
+        .then(res => res.json())
+        .then(data => data);
+      console.log('response', response);
+      dispatch({ type: 'LOAD_ARTICLES', payload: response })
+    })();
+  }, [])
 
   function addArticle(newArticle: ArticleProps) {
     dispatch({ type: 'ADD_ARTICLE', payload: newArticle })

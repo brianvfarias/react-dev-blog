@@ -12,7 +12,7 @@ export interface ArticleProps {
 }
 
 export function Article({ id, title, content, cover }: ArticleProps) {
-  console.log(cover,)
+  // console.log('cover', cover)
   const articlesContext = useContext(ArticlesContext);
   return (
     <article id={id} className="flex flex-col w-1/2 items-start px-8 py-4 mx-auto my-4 rounded-sm bg-slate-300" >
