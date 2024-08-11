@@ -11,13 +11,15 @@ import { ArticlePage } from "./components/ArticlePage";
 import { ArticleLayout } from "./components/ArticleLayout";
 
 function App() {
-  const { state } = useContext(ArticlesContext)
+  const { state } = useContext(ArticlesContext);
+
+  console.log("state", state)
 
   return (
     <>
       <ArticlesContextProvider>
         <Routes>
-          <Route path="/" element={<ArticleList articles={state?.articles ?? []} />} />
+          <Route path="/" element={<ArticleList articles={state?.articles} />} />
           <Route path="/new" element={<ArticleForm />} />
           <Route path="/:id" element={<ArticleLayout />}>
             <Route index path="/:id/show" element={<ArticlePage />} />
