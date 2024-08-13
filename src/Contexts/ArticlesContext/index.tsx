@@ -1,9 +1,9 @@
 import { createContext } from "react";
-import { ArticleProps } from "../../components/Article";
+import { ArticleCreation } from "../../components/Article";
 
 interface ArticleContextType {
-  addArticle: (article: ArticleProps) => void
-  deleteArticle: (article: ArticleProps) => void
+  addArticle: (article: ArticleCreation) => void
+  deleteArticle: (id: string) => void
 }
 
 export const ArticlesContext = createContext<ArticleContextType | null>(null);

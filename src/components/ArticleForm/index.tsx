@@ -6,7 +6,6 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { ChangeEvent, useContext, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid';
 import { ArticlesContext } from '../../Contexts/ArticlesContext'
 
 const formSchema = z.object({
@@ -57,7 +56,7 @@ export function ArticleForm(props: ArticleFormProps) {
     const { title, content, cover } = article;
     console.log({ title, content, cover, sendCover });
     const newContent = content.replace(/\n/gi, '  \n');
-    articleContext!.addArticle({ id: uuidv4(), title, content: newContent, cover: sendCover });
+    articleContext!.addArticle({ title, content: newContent, cover: sendCover });
     form.reset()
     if (props?.setOpen) {
       props.setOpen(false);

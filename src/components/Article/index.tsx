@@ -4,21 +4,26 @@ import { Button } from "../ui/button";
 import { useContext } from "react";
 import { ArticlesContext } from "../../Contexts/ArticlesContext";
 import Markdown from "react-markdown";
-export interface ArticleProps {
-  id: string,
+
+export interface ArticleCreation {
   title: string,
   content: string,
   cover?: string
+}
+export interface ArticleProps extends ArticleCreation {
+  id: string,
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 export function Article({ id, title, content, cover }: ArticleProps) {
   // console.log('cover', cover)
   const articlesContext = useContext(ArticlesContext);
   return (
-    <article id={id} className="flex flex-col w-1/2 items-start px-8 py-4 mx-auto my-4 rounded-sm bg-slate-300" >
+    <article id={id + ""} className="flex flex-col w-1/2 items-start px-8 py-4 mx-auto my-4 rounded-sm bg-slate-300" >
       <div className="flex justify-around  w-full">
         <h1 className="text-2xl font-bold">{title}</h1>
-        <Button variant="destructive" onClick={() => articlesContext!.deleteArticle({ id, title, content })} >
+        <Button variant="destructive" onClick={() => articlesContext!.deleteArticle(id + "")} >
           <Trash />
         </Button>
       </div>
@@ -30,6 +35,6 @@ export function Article({ id, title, content, cover }: ArticleProps) {
           <Button variant={"outline"} className="mt-4" >Read more</Button>
         </div>
       </div>
-    </article>
+    </article >
   )
 }

@@ -4,10 +4,11 @@ import { ArticleProps } from "./components/Article"
 import { Navbar } from "./components/Navbar"
 import { ArticleList } from "./components/ArticleList";
 import { ArticlesContext } from "./Contexts/ArticlesContext";
+import { createArticle, getArticles } from "./api";
 
 interface ArticleReducerActions {
   type: string,
-  payload: ArticleProps | ArticleProps[]
+  payload: ArticleProps[]
 }
 
 interface ReducerState {
@@ -20,11 +21,11 @@ function articlesReducer(state: ReducerState, action: ArticleReducerActions): Re
   switch (action.type) {
     case 'ADD_ARTICLE': {
       // const newArticles = ;
-      return { ...state, articles: [...articles, action!.payload] }
+      return { ...state, articles: [...articles, action!.payload[0]] }
       break;
     }
     case 'DELETE_ARTICLE': {
-      const newArticles = articles.filter(article => article.id !== action.payload!.id)
+      const newArticles = articles.filter(article => article.id !== action.payload[0]!.id)
       return { ...state, articles: newArticles }
     }
     case 'LOAD_ARTICLES': {
@@ -72,20 +73,19 @@ function App() {
   const [state, dispatch] = useReducer(articlesReducer, { articles: [] })
   useEffect(() => {
     (async function fetchArticles() {
-      const response = await fetch('http://localhost:8888/articles')
-        .then(res => res.json())
-        .then(data => data);
-      console.log('response', response);
-      dispatch({ type: 'LOAD_ARTICLES', payload: response })
+      const articles = await getArticles();
+      dispatch({ type: 'LOAD_ARTICLES', payload: articles })
     })();
   }, [])
 
   function addArticle(newArticle: ArticleProps) {
-    dispatch({ type: 'ADD_ARTICLE', payload: newArticle })
+    createArticle(newArticle);
+    // updating the UI optimistically
+    dispatch({ type: 'ADD_ARTICLE', payload: [newArticle] })
   }
 
   function deleteArticle(article: ArticleProps) {
-    dispatch({ type: 'DELETE_ARTICLE', payload: article })
+    dispatch({ type: 'DELETE_ARTICLE', payload: [article] })
   }
 
   return (
